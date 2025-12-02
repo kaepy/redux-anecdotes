@@ -25,6 +25,7 @@ const anecdoteSlice = createSlice({
   name: "anecdotes",
   initialState: anecdotesAtStart.map(asObject),
   reducers: {
+    // Action to create a new anecdote
     createAnecdote(state, action) {
       state.push({
         content: action.payload,
@@ -32,13 +33,16 @@ const anecdoteSlice = createSlice({
         votes: 0,
       });
     },
+    // Action to vote for an anecdote
     voteFor(state, action) {
       const id = action.payload;
       const anecdoteToVote = state.find((a) => a.id === id);
+      // Create a new object with incremented votes
       const votedAnecdote = {
         ...anecdoteToVote,
         votes: anecdoteToVote.votes + 1,
       };
+      // Return a new state array with the updated anecdote
       return state.map((anecdote) =>
         anecdote.id !== id ? anecdote : votedAnecdote
       );

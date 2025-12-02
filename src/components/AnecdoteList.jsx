@@ -24,6 +24,7 @@ const AnecdoteList = () => {
       return anecdotes;
     }
 
+    // Filter anecdotes based on the filter string
     const anecdotesFilter = (anecdote) =>
       anecdote.content.toLowerCase().includes(filter.toLowerCase());
     return filter !== "" ? anecdotes.filter(anecdotesFilter) : [];
