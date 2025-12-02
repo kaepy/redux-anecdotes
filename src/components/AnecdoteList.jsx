@@ -7,8 +7,7 @@ const Anecdote = ({ anecdote, handleClick }) => {
     <div>
       <div>{anecdote.content}</div>
       <div>
-        has {anecdote.votes}
-        <button onClick={handleClick}>vote</button>
+        has {anecdote.votes} <button onClick={handleClick}>vote</button>
       </div>
     </div>
   );
@@ -36,17 +35,18 @@ const AnecdoteList = () => {
     dispatch(voteFor(id));
   };
 
+  // Create a sorted copy of anecdotes based on votes in descending order
+  const sorted = [...anecdotes].sort((a, b) => a.votes - b.votes);
+
   return (
     <div>
-      {anecdotes
-        .sort((a, b) => a.votes - b.votes)
-        .map((anecdote) => (
-          <Anecdote
-            key={anecdote.id}
-            anecdote={anecdote}
-            handleClick={() => vote(anecdote.id)}
-          />
-        ))}
+      {sorted.map((anecdote) => (
+        <Anecdote
+          key={anecdote.id}
+          anecdote={anecdote}
+          handleClick={() => vote(anecdote.id)}
+        />
+      ))}
     </div>
   );
 };

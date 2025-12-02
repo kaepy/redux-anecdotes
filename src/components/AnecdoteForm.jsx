@@ -16,7 +16,7 @@ const AnecdoteForm = () => {
     <div>
       <h2>create new</h2>
       <form onSubmit={addAnecdote}>
-        <div>
+        <div style={{ marginBottom: "4px" }}>
           <input name="anecdote" />
         </div>
         <button type="submit">create</button>
