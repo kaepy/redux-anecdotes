@@ -1,10 +1,11 @@
 import { useDispatch, useSelector } from "react-redux";
 import { voteFor } from "../reducers/anecdoteReducer";
+import { showNotification } from "../reducers/notificationReducer";
 
 // Component to display a single anecdote
 const Anecdote = ({ anecdote, handleClick }) => {
   return (
-    <div>
+    <div style={{ marginBottom: "5px" }}>
       <div>{anecdote.content}</div>
       <div>
         has {anecdote.votes} <button onClick={handleClick}>vote</button>
@@ -20,6 +21,7 @@ const AnecdoteList = () => {
 
   // Get anecdotes from the Redux store, applying the filter
   const anecdotes = useSelector(({ filter, anecdotes }) => {
+    // If there's no filter, return all anecdotes
     if (filter === "") {
       return anecdotes;
     }
@@ -34,6 +36,11 @@ const AnecdoteList = () => {
   const vote = (id) => {
     console.log("vote", id);
     dispatch(voteFor(id));
+    dispatch(
+      showNotification(
+        "You voted '" + anecdotes.find((a) => a.id === id).content + "'"
+      )
+    );
   };
 
   // Create a sorted copy of anecdotes based on votes in descending order
