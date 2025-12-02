@@ -7,8 +7,10 @@ const anecdotesAtStart = [
   "Debugging is twice as hard as writing the code in the first place. Therefore, if you write the code as cleverly as possible, you are, by definition, not smart enough to debug it.",
 ];
 
+// Helper function to generate unique IDs
 const getId = () => (100000 * Math.random()).toFixed(0);
 
+// Convert anecdote string to an object
 const asObject = (anecdote) => {
   return {
     content: anecdote,
@@ -17,8 +19,10 @@ const asObject = (anecdote) => {
   };
 };
 
+// Initial state with anecdotes as objects
 const initialState = anecdotesAtStart.map(asObject);
 
+// Reducer function to handle actions
 const reducer = (state = initialState, action) => {
   console.log("state now: ", state);
   console.log("action", action);
@@ -26,7 +30,7 @@ const reducer = (state = initialState, action) => {
   switch (action.type) {
     case "NEW_ANECDOTE":
       return [...state, action.payload];
-    case "VOTE":
+    case "VOTE": {
       const id = action.data.id;
       const anecdoteToVote = state.find((a) => a.id === id);
       const votedAnecdote = {
@@ -36,12 +40,13 @@ const reducer = (state = initialState, action) => {
       return state.map((anecdote) =>
         anecdote.id !== id ? anecdote : votedAnecdote
       );
+    }
     default:
       return state;
   }
 };
 
-// action creators
+// Action creators
 export const createAnecdote = (content) => {
   return {
     type: "NEW_ANECDOTE",
@@ -53,6 +58,7 @@ export const createAnecdote = (content) => {
   };
 };
 
+// Action creator for voting
 export const voteFor = (id) => {
   return {
     type: "VOTE",
