@@ -1,8 +1,7 @@
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 
-import { setAnecdotes } from "./reducers/anecdoteReducer";
-import anecdoteService from "./services/anecdotes";
+import { initializeAnecdotes } from "./reducers/anecdoteReducer";
 
 import AnecdoteList from "./components/AnecdoteList";
 import AnecdoteForm from "./components/AnecdoteForm";
@@ -15,9 +14,7 @@ const App = () => {
 
   // Fetch anecdotes from the server when the component mounts and set them in the Redux store
   useEffect(() => {
-    anecdoteService
-      .getAll()
-      .then((anecdotes) => dispatch(setAnecdotes(anecdotes)));
+    dispatch(initializeAnecdotes());
   }, [dispatch]);
 
   return (
