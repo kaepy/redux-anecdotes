@@ -1,19 +1,12 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-// Helper function to generate unique IDs
-const getId = () => (100000 * Math.random()).toFixed(0);
-
 const anecdoteSlice = createSlice({
   name: "anecdotes",
   initialState: [],
   reducers: {
     // Action to create a new anecdote
     createAnecdote(state, action) {
-      state.push({
-        content: action.payload,
-        id: getId(),
-        votes: 0,
-      });
+      state.push(action.payload);
     },
     // Action to vote for an anecdote
     voteFor(state, action) {
@@ -29,6 +22,7 @@ const anecdoteSlice = createSlice({
         anecdote.id !== id ? anecdote : votedAnecdote
       );
     },
+    // Action to set the entire anecdotes state
     setAnecdotes(state, action) {
       return action.payload;
     },
