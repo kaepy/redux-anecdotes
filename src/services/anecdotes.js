@@ -30,4 +30,20 @@ const createNew = async (content) => {
   return await response.json(); // Parse JSON response
 };
 
-export default { getAll, createNew };
+// Function to add a vote to an anecdote
+const addVote = async (id, updateVote) => {
+  const options = {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(updateVote),
+  };
+  const response = await fetch(`${baseUrl}/${id}`, options);
+
+  if (!response.ok) {
+    throw new Error("Failed to vote anecdote");
+  }
+
+  return await response.json();
+};
+
+export default { getAll, createNew, addVote };

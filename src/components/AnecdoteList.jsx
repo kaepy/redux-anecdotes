@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from "react-redux";
-import { voteFor } from "../reducers/anecdoteReducer";
+import { voteAnecdote } from "../reducers/anecdoteReducer";
 import { showNotification } from "../reducers/notificationReducer";
 
 // Component to display a single anecdote
@@ -33,9 +33,10 @@ const AnecdoteList = () => {
   });
 
   // Function to handle voting for an anecdote
-  const vote = (id) => {
-    console.log("vote", id);
-    dispatch(voteFor(id));
+  const addVoteToAnecdote = async (id) => {
+    //console.log("vote", id);
+    dispatch(voteAnecdote(id));
+
     dispatch(
       showNotification(
         "You voted '" + anecdotes.find((a) => a.id === id).content + "'"
@@ -52,7 +53,7 @@ const AnecdoteList = () => {
         <Anecdote
           key={anecdote.id}
           anecdote={anecdote}
-          handleClick={() => vote(anecdote.id)}
+          handleClick={() => addVoteToAnecdote(anecdote.id)}
         />
       ))}
     </div>

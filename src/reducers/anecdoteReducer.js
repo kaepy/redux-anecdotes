@@ -11,17 +11,8 @@ const anecdoteSlice = createSlice({
     },
     // Action to vote for an anecdote
     voteFor(state, action) {
-      const id = action.payload;
-      const anecdoteToVote = state.find((a) => a.id === id);
-      // Create a new object with incremented votes
-      const votedAnecdote = {
-        ...anecdoteToVote,
-        votes: anecdoteToVote.votes + 1,
-      };
-      // Return a new state array with the updated anecdote
-      return state.map((anecdote) =>
-        anecdote.id !== id ? anecdote : votedAnecdote
-      );
+      const updated = action.payload;
+      return state.map((a) => (a.id !== updated.id ? a : updated));
     },
     // Action to set the entire anecdotes state
     setAnecdotes(state, action) {
@@ -31,7 +22,7 @@ const anecdoteSlice = createSlice({
 });
 
 // Extract the action creator for setting anecdotes
-const { setAnecdotes, createAnecdote } = anecdoteSlice.actions;
+const { setAnecdotes, createAnecdote, voteFor } = anecdoteSlice.actions;
 
 // Thunk action to initialize anecdotes from the service
 export const initializeAnecdotes = () => {
@@ -48,5 +39,22 @@ export const appendAnecdote = (content) => {
   };
 };
 
-export const { voteFor } = anecdoteSlice.actions;
+// Thunk action to vote for an anecdote
+export const voteAnecdote = (id) => {
+  return async (dispatch, getState) => {
+    // getState to access current state
+    // Find the anecdote to vote for
+    const anecdoteToVote = getState().anecdotes.find((a) => a.id === id);
+    // Create updated anecdote object with incremented votes
+    const votedAnecdote = {
+      ...anecdoteToVote,
+      votes: anecdoteToVote.votes + 1,
+    };
+    // Send the updated anecdote to the service
+    const savedAnecdote = await anecdoteService.addVote(id, votedAnecdote);
+    // Dispatch the voteFor action with the saved anecdote
+    dispatch(voteFor(savedAnecdote));
+  };
+};
+
 export default anecdoteSlice.reducer;
