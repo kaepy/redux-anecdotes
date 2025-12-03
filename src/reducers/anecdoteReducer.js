@@ -31,7 +31,7 @@ const anecdoteSlice = createSlice({
 });
 
 // Extract the action creator for setting anecdotes
-const { setAnecdotes } = anecdoteSlice.actions;
+const { setAnecdotes, createAnecdote } = anecdoteSlice.actions;
 
 // Thunk action to initialize anecdotes from the service
 export const initializeAnecdotes = () => {
@@ -41,5 +41,12 @@ export const initializeAnecdotes = () => {
   };
 };
 
-export const { createAnecdote, voteFor } = anecdoteSlice.actions;
+export const appendAnecdote = (content) => {
+  return async (dispatch) => {
+    const newAnecdote = await anecdoteService.createNew(content);
+    dispatch(createAnecdote(newAnecdote));
+  };
+};
+
+export const { voteFor } = anecdoteSlice.actions;
 export default anecdoteSlice.reducer;
