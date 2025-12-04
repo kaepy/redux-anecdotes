@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { getAnecdotes, createAnecdote } from './requests'
+import { getAnecdotes, createAnecdote, updateAnecdote } from './requests'
 
 import AnecdoteForm from './components/AnecdoteForm'
 import Notification from './components/Notification'
@@ -8,16 +8,33 @@ const App = () => {
   // Mutation for creating a new anecdote
   const queryClient = useQueryClient()
 
+  // Mutation for creating a new anecdote
   const newAnecdoteMutation = useMutation({
     mutationFn: createAnecdote,
-    onSuccess: () => {
-      // Invalidate anecdotes so the list refreshes after create
-      queryClient.invalidateQueries(['anecdotes'])
+    // Invalidate anecdotes so the list refreshes after create
+    onSuccess: (newAnecdote) => {
+      const anecdotes = queryClient.getQueryData(['anecdotes']) // Get current anecdotes from cache
+      queryClient.setQueryData(['anecdotes'], anecdotes.concat(newAnecdote)) // Update cache directly: add new anecdote
+    },
+  })
+
+  // Mutation for updating an anecdote
+  const updateAnecdoteMutation = useMutation({
+    mutationFn: updateAnecdote, // Update anecdote function
+    onSuccess: (updateAnecdote) => {
+      //queryClient.invalidateQueries({ queryKey: ['anecdotes'] })
+
+      const anecdotes = queryClient.getQueryData(['anecdotes'])
+      queryClient.setQueryData(
+        ['anecdotes'],
+        anecdotes.map((a) => (a.id !== updateAnecdote.id ? a : updateAnecdote)),
+      ) // Update cache directly: replace updated anecdote
     },
   })
 
   // Anecdote have to be at least 5 digits long - No error handling yet!
   const addAnecdote = async (event) => {
+    console.log('add new anecdote')
     event.preventDefault()
     const content = event.target.anecdote.value
     event.target.anecdote.value = ''
@@ -25,7 +42,8 @@ const App = () => {
   }
 
   const handleVote = (anecdote) => {
-    console.log('vote')
+    console.log('vote anecdote')
+    updateAnecdoteMutation.mutate({ ...anecdote, votes: anecdote.votes + 1 })
   }
 
   // Use React Query to fetch notes
