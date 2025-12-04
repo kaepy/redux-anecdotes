@@ -17,17 +17,33 @@ const notificationSlice = createSlice({
 
 export const { setNotification, clearNotification } = notificationSlice.actions;
 
-// Thunk action to show a notification for 5 seconds by default
-export const showNotification =
-  (message, timeout = 5000) =>
-  (dispatch) => {
-    dispatch(setNotification(message));
+// Thunk action to show a notification for given timeout value as seconds
+// timeout value is in seconds and should be converted to milliseconds
 
-    if (timeout > 0) {
-      setTimeout(() => {
-        dispatch(clearNotification());
-      }, timeout);
-    }
-  };
+let timeoutId = null;
+
+export const showNotification = (message, timeout) => (dispatch) => {
+  if (!message) return;
+
+  // Convert timeout from seconds to milliseconds
+  const ms = Math.max(0, Number(timeout) || 0) * 1000;
+
+  // Clear any existing timeout to avoid overlapping notifications
+  if (timeoutId) {
+    clearTimeout(timeoutId);
+    timeoutId = null;
+  }
+
+  // Dispatch action to set the notification message
+  dispatch(setNotification(message));
+
+  // If timeout is greater than 0, set a timeout to clear the notification
+  if (ms > 0) {
+    timeoutId = setTimeout(() => {
+      dispatch(clearNotification()); // Clear the notification after the timeout
+      timeoutId = null;
+    }, ms);
+  }
+};
 
 export default notificationSlice.reducer;

@@ -37,11 +37,9 @@ const AnecdoteList = () => {
     //console.log("vote", id);
     dispatch(voteAnecdote(id));
 
-    dispatch(
-      showNotification(
-        "You voted '" + anecdotes.find((a) => a.id === id).content + "'"
-      )
-    );
+    // Get the content of the voted anecdote for notification
+    const anecdote = anecdotes.find((a) => a.id === id);
+    dispatch(showNotification(`You voted '${anecdote.content}'`, 10)); // Show notification for the voted anecdote
   };
 
   // Create a sorted copy of anecdotes based on votes in descending order
