@@ -1,11 +1,5 @@
-const AnecdoteForm = () => {
-  const onCreate = (event) => {
-    event.preventDefault()
-    const content = event.target.anecdote.value
-    event.target.anecdote.value = ''
-    console.log('new anecdote')
-  }
-
+const AnecdoteForm = ({ onCreate }) => {
+  // Receive onCreate as a prop and use it as the form's submit handler
   return (
     <div>
       <h3>create new</h3>
