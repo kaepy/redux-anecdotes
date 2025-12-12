@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { getAnecdotes, createAnecdote, updateAnecdote } from './requests'
+import { useNotification } from './hooks/useNotification'
 
 import AnecdoteForm from './components/AnecdoteForm'
 import Notification from './components/Notification'
@@ -15,6 +16,7 @@ const App = () => {
     onSuccess: (newAnecdote) => {
       const anecdotes = queryClient.getQueryData(['anecdotes']) // Get current anecdotes from cache
       queryClient.setQueryData(['anecdotes'], anecdotes.concat(newAnecdote)) // Update cache directly: add new anecdote
+      showNotification(`anecdote '${newAnecdote.content}' created`, 5000)
     },
   })
 
@@ -29,8 +31,12 @@ const App = () => {
         ['anecdotes'],
         anecdotes.map((a) => (a.id !== updateAnecdote.id ? a : updateAnecdote)),
       ) // Update cache directly: replace updated anecdote
+      showNotification(`anecdote '${updateAnecdote.content}' voted`, 5000)
     },
   })
+
+  // Get showNotification from notification hook
+  const { showNotification } = useNotification()
 
   // Anecdote have to be at least 5 digits long - No error handling yet!
   const addAnecdote = async (event) => {
