@@ -16,7 +16,7 @@ const notificationReducer = (state, action) => {
 const NotificationContext = createContext()
 
 // Provider component to wrap the app and provide notification state
-export const NotificationContextProvider = ({ children }) => {
+export const NotificationContextProvider = (props) => {
   // Use useReducer to manage notification state
   const [notification, notificationDispatch] = useReducer(
     notificationReducer,
@@ -35,7 +35,7 @@ export const NotificationContextProvider = ({ children }) => {
     <NotificationContext.Provider
       value={{ notification, notificationDispatch, showNotification }}
     >
-      {children}
+      {props.children}
     </NotificationContext.Provider>
   )
 }

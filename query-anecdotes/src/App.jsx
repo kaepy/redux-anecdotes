@@ -1,3 +1,5 @@
+// Toteuta nyt lisäämisen yhteyteen virheenkäsittely. Käytännössä riittää, että näytät epäonnistuneen lisäyksen yhteydessä käyttäjälle notifikaation.
+
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { getAnecdotes, createAnecdote, updateAnecdote } from './requests'
 import { useNotification } from './hooks/useNotification'
@@ -6,8 +8,7 @@ import AnecdoteForm from './components/AnecdoteForm'
 import Notification from './components/Notification'
 
 const App = () => {
-  // Mutation for creating a new anecdote
-  const queryClient = useQueryClient()
+  const queryClient = useQueryClient() // Get query client instance
 
   // Mutation for creating a new anecdote
   const newAnecdoteMutation = useMutation({
@@ -17,6 +18,12 @@ const App = () => {
       const anecdotes = queryClient.getQueryData(['anecdotes']) // Get current anecdotes from cache
       queryClient.setQueryData(['anecdotes'], anecdotes.concat(newAnecdote)) // Update cache directly: add new anecdote
       showNotification(`anecdote '${newAnecdote.content}' created`, 5000)
+    },
+    onError: (error) => {
+      showNotification(
+        `Anecdote creation failed: content must be at least 5 characters long`,
+        5000,
+      )
     },
   })
 
@@ -44,6 +51,13 @@ const App = () => {
     event.preventDefault()
     const content = event.target.anecdote.value
     event.target.anecdote.value = ''
+    /*if (content.length < 5) {
+      showNotification(
+        'Anecdote creation failed: content must be at least 5 characters long',
+        5000,
+      )
+      return
+    }*/
     newAnecdoteMutation.mutate({ content, votes: 0 })
   }
 
